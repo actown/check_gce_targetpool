@@ -29,12 +29,12 @@ class CheckGceTargetpool(Plugin):
 
         instance_json = {'instance': 'https://www.googleapis.com/compute/v1/projects/' + self.options.gce_project_id + '/zones/' + self.options.gce_region + '-' + self.options.gce_zone + '/instances/' + self.options.gce_targetpool_instance}
         try:
-            health_state = requests.post('https://www.googleapis.com/compute/v1/projects/' + self.options.gce_project + '/regions/' + self.options.gce_region + '/targetPools/' + self.options.gce_targetpool + '/getHealth', data=json.dumps(instance_json), headers={'Authorization': 'Bearer ' + token})
+            health_state = requests.post('https://www.googleapis.com/compute/v1/projects/' + self.options.gce_project_id + '/regions/' + self.options.gce_region + '/targetPools/' + self.options.gce_targetpool + '/getHealth', data=json.dumps(instance_json), headers={'Authorization': 'Bearer ' + token, 'content-type': 'application/json'})
             if health_state.status_code is not 200:
                 return Response(pynagios.UNKNOWN,
                                 ("The Google getHealth url status code is"
                                  "not 200."))
-            health_status = health_state.json()['healthStatus']['healthState']
+            health_status = health_state.json()['healthStatus'][0]['healthState']
         except:
             return Response(pynagios.UNKNOWN,
                             ("Unable to get the health status from Google."))
