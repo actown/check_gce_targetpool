@@ -20,7 +20,7 @@ class CheckGceTargetpool(Plugin):
             auth_code = requests.get('http://metadata/computeMetadata/v1/instance/service-accounts/default/token', headers={'Metadata-Flavor': 'Google'})
             if auth_code.status_code is not 200:
                 return Response(pynagios.UNKNOWN,
-                                ("The Google token url status code is"
+                                ("The Google token url status code is "
                                  "not 200."))
             token = auth_code.json()['access_token']
         except:
@@ -32,14 +32,14 @@ class CheckGceTargetpool(Plugin):
             health_state = requests.post('https://www.googleapis.com/compute/v1/projects/' + self.options.gce_project_id + '/regions/' + self.options.gce_region + '/targetPools/' + self.options.gce_targetpool + '/getHealth', data=json.dumps(instance_json), headers={'Authorization': 'Bearer ' + token, 'content-type': 'application/json'})
             if health_state.status_code is not 200:
                 return Response(pynagios.UNKNOWN,
-                                ("The Google getHealth url status code is"
+                                ("The Google getHealth url status code is "
                                  "not 200."))
             health_status = health_state.json()['healthStatus'][0]['healthState']
         except:
             return Response(pynagios.UNKNOWN,
                             ("Unable to get the health status from Google."))
 
-        if health_status is 'HEALTHY':
+        if health_status == 'HEALTHY':
             return Response(pynagios.OK,
                             ("The targetpool is healthy."))
         else:
