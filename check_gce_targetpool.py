@@ -8,7 +8,7 @@ from pynagios import Response
 
 
 class CheckGceTargetpool(Plugin):
-    gce_project_id = make_option("--project-id", type="int")
+    gce_project_id = make_option("--project-id", type="string")
     gce_targetpool = make_option("--targetpool", type="string")
     gce_targetpool_instance = make_option("--targetpool-instance",
                                           type="string")
